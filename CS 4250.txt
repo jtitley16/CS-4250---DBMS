@@ -1,0 +1,229 @@
+
+Conversation opened. 1 read message.
+
+Skip to content
+Using California State University, Stanislaus Mail with screen readers
+Joshua
+	ahatem
+	Brandon Halpin
+	Cristian Juarez
+	cs4950-s15
+	Edward Cruz
+	Efrain Nieves
+	Eric Conrad
+	Hall, Laura
+	hmehra
+	ialbright
+Move to Inbox
+ 
+More 
+5 of 9
+ 
+updated dbms script as of this email timestamp
+Joshua Titley <jtitley@csustan.edu>
+	
+Attachments4/19/15
+		
+to Efrain
+dbms
+Attachments area
+Preview attachment real_dbms_script.txt
+[Text]
+	
+Click here to Reply or Forward
+Using 0.18 GB
+Program Policies
+Powered by
+Google
+Last account activity: 1 hour ago
+Details
+	
+	
+	Efrain Nieves
+enieves@csustan.edu
+Show details
+
+CREATE TABLE STAR_SYSTEM (
+	Name		VARCHAR(200),
+	SID		INT,
+	Coordiantes	POINT,
+	PRIMARY KEY (Name)) ENGINE = INNODB;
+CREATE TABLE Celestial_Body (
+	Name		VARCHAR(200),
+	CID		INT,
+	Present		Boolean Not Null Default 1,
+	INDEX par_ind (Name),
+	PRIMARY KEY (Name),
+	Foreign Key (Name)
+		REFERENCES STAR_SYSTEM (Name)) ENGINE=INNODB;
+CREATE TABLE Star(
+    	Star_Name	VARCHAR(200),
+	INDEX par_ind (Star_Name),
+	PRIMARY KEY (Star_Name),
+    	FOREIGN KEY (Star_Name) 
+        	REFERENCES Celestial_Body(Name)) ENGINE=INNODB;
+CREATE TABLE Satellite(
+	SatName		VARCHAR(200),
+	Habitat		Int,
+	INDEX par_ind (SatName),
+	PRIMARY KEY (SatName),
+	FOREIGN KEY(SatName)
+		REFERENCES Celestial_Body(Name)) ENGINE = INNODB;
+CREATE TABLE Moon(
+	Moon_Name    	VARCHAR(200),
+	INDEX par_ind (Moon_Name),
+    	PRIMARY KEY(Moon_Name),
+    	FOREIGN KEY(Moon_Name)
+		REFERENCES Satellite(SatName)) ENGINE = INNODB;
+CREATE TABLE Unit(
+	UID		INT,
+	Name		VARCHAR(200),
+	Functional	Boolean Not Null Default 1,
+	PRIMARY KEY (UID)) ENGINE = INNODB;
+CREATE TABLE Immobile_Unit(
+	Immob_UID    	INT,
+	INDEX par_ind (Immob_UID),
+	PRIMARY KEY (Immob_UID),
+	FOREIGN KEY(Immob_UID)
+		REFERENCES Unit(UID)) ENGINE = INNODB;
+CREATE TABLE Equipment(
+	Name        	VARCHAR(200),
+    	Quantity    	INT,
+    	Deployed    	BOOLEAN NOT NULL DEFAULT 0,
+	UID        	INT NOT NULL,
+	INDEX par_ind (UID),
+	PRIMARY KEY (Name, UID),
+	FOREIGN KEY(UID)
+		REFERENCES Unit(UID)
+		ON DELETE CASCADE) ENGINE = INNODB;
+CREATE TABLE Celestial_Body_Contained_In_Star_System(
+	CBName     	VARCHAR(200),
+	SSName     	VARCHAR(200),
+    	PRIMARY KEY (CBName, SSName),
+	INDEX par_ind (CBName),
+	INDEX par_ind1 (SSName),
+    	FOREIGN KEY(CBName)
+    		REFERENCES Celestial_Body(Name),
+   	FOREIGN KEY(SSname)
+		REFERENCES Star_System(Name)) ENGINE = INNODB;
+CREATE TABLE Planet(
+	Planet_Name		VARCHAR(200),
+	INDEX par_ind (Planet_Name),
+	PRIMARY KEY (Planet_Name),
+	FOREIGN KEY (Planet_Name)
+		REFERENCES Satellite (SatName)) ENGINE = INNODB;
+CREATE TABLE Planet_Orbits_Star(
+	Planet_Name   	VARCHAR(200),
+    	Star_Name     	VARCHAR(200),
+	INDEX par_ind (Planet_Name),
+	INDEX par_ind1 (Star_Name),
+	PRIMARY KEY (Planet_Name, Star_Name),
+	FOREIGN KEY(Planet_Name)
+		REFERENCES Planet(Planet_Name),
+	FOREIGN KEY(Star_Name)
+		REFERENCES Star(Star_Name)) ENGINE = INNODB;
+CREATE TABLE Moon_Orbits_Planet(
+	Moon_Name    	VARCHAR(20),
+    	Planet_Name     VARCHAR(20),	
+	INDEX par_ind (Moon_Name),
+	INDEX par_ind1 (Planet_Name),
+	PRIMARY KEY (Moon_Name, Planet_Name),
+	FOREIGN KEY (Moon_Name)
+		REFERENCES Moon (Moon_Name),
+	FOREIGN KEY (Planet_Name)
+		REFERENCES Planet (Planet_Name)) ENGINE = INNODB;
+CREATE TABLE Immobile_Unit_Built_At_Celestial_Body(
+	CBName		VARCHAR(200),
+	Immob_UID	Int,
+	INDEX par_ind (CBName),
+	INDEX par_ind1 (Immob_UID),
+	PRIMARY KEY (CBName, Immob_UID),
+	FOREIGN KEY (CBName)
+		REFERENCES Celestial_Body(Name),
+	FOREIGN KEY (Immob_UID)
+		REFERENCES Immobile_Unit (Immob_UID)) ENGINE = INNODB;
+CREATE TABLE Resource(
+	Name		VARCHAR(200),
+	RES_ID		INT,
+	Type		VARCHAR(200),
+	PRIMARY KEY (Name)) ENGINE = INNODB;
+CREATE TABLE RACE(
+	RID		INT,
+	Type		VARCHAR(200),
+	Name		VARCHAR(200),
+	PRIMARY KEY (RID)) ENGINE = INNODB;
+CREATE TABLE Faction(
+	Name		VARCHAR(200),
+	RID		INT,
+	Habitat		INT,
+	Extinct		BOOLEAN NOT NULL DEFAULT 1,
+	INDEX par_ind (RID),
+	PRIMARY KEY (Name),
+	FOREIGN KEY (RID)
+		REFERENCES RACE (RID)) ENGINE = INNODB;
+CREATE TABLE Random_Event(
+	Name		VARCHAR(200),
+	EVID		INT,
+	Type		VARCHAR(200),
+	PRIMARY KEY (EVID)) ENGINE = INNODB;
+CREATE TABLE Mobile_Unit(
+	Mob_UID		INT,
+	INDEX par_ind (Mob_UID),
+	PRIMARY KEY (Mob_UID),
+	FOREIGN KEY (Mob_UID)
+		REFERENCES Unit(UID)) ENGINE = INNODB;
+CREATE TABLE Resource_Found_At_Celestial_Body(
+	ResName		VARCHAR(200),
+	CBName		VARCHAR(200),
+	INDEX par_ind (ResName),
+	INDEX par_ind1 (CBName),
+	PRIMARY KEY (ResName, CBName),
+	FOREIGN KEY (ResName)
+		REFERENCES Resource(Name),
+	FOREIGN KEY (CBName)
+		REFERENCES Celestial_Body(Name)) ENGINE = INNODB;
+CREATE TABLE Random_Event_Occur_At_Celestial_Body(
+	REVID		INT,
+	CBName		VARCHAR(200),
+	Duration	TIME,
+	Timestampe	TIMESTAMP,
+	INDEX par_ind (CBName),
+	INDEX par_ind1 (REVID),
+	PRIMARY KEY (REVID, CBName),
+	FOREIGN KEY (CBName)
+    		REFERENCES Celestial_Body(Name),
+	FOREIGN KEY (REVID)
+		REFERENCES Random_Event(EVID)) ENGINE = INNODB;
+CREATE TABLE Faction_Owns_Unit(
+	FacName		VARCHAR(200),
+	UID		INT,
+	INDEX par_ind (FacName),
+	INDEX par_ind1 (UID),
+	PRIMARY KEY (FacName),
+	FOREIGN KEY (FacName)
+		REFERENCES Faction(Name),
+	FOREIGN KEY (UID)
+		REFERENCES Unit(UID)) ENGINE = INNODB;
+CREATE TABLE Faction_Controls_Celestial_Body(
+	FacName		VARCHAR(200),
+	CBName		VARCHAR(200),
+	INDEX par_ind (FacName),
+	INDEX par_ind1 (CBName),
+	PRIMARY KEY (CBName),
+	FOREIGN KEY (FacName)
+		REFERENCES Faction(Name),
+	FOREIGN KEY(CBName)
+    		REFERENCES Celestial_Body(Name))ENGINE = INNODB;
+CREATE TABLE Mobile_Unit_Stationed_At_Celestial_Body(
+	Mob_UID		INT,
+	CBName		VARCHAR(200),
+	INDEX par_ind (Mob_UID),
+	INDEX par_ind1 (CBName),
+	PRIMARY KEY (Mob_UID, CBName),
+	FOREIGN KEY (Mob_UID)
+		REFERENCES Unit(UID),
+	FOREIGN KEY(CBName)
+    		REFERENCES Celestial_Body(Name)) ENGINE = INNODB;
+
+real_dbms_script.txt
+Displaying real_dbms_script.txt.
